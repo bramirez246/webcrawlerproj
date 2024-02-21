@@ -18,10 +18,6 @@ async function main(){
     //store results from crawl
     const pages = await crawlPage(baseURL, baseURL, {});
 
-    // for(const page in pages){
-    //     console.log(page, pages[page]);
-    // }
-
     printReport(pages);
 };
 
