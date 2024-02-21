@@ -7,12 +7,14 @@ async function crawlPage(baseURL, currentURL, pages){
     const baseURLObj = new URL(baseURL);
     const currentURLObj = new URL(currentURL);
     
+    //first base case, if currentURL is an external link
     if(baseURLObj.hostname !== currentURLObj.hostname){
         return pages;
     }
 
     const normalizedCurrentURL = normalizeURL(currentURL);
 
+    //second base case, if the page has been visited then increment counter
     if(pages[normalizedCurrentURL] > 0){
         pages[normalizedCurrentURL]++;
         return pages;
@@ -60,10 +62,11 @@ async function crawlPage(baseURL, currentURL, pages){
 //this function is a utility function that helps crawlPage
 //get URLs from the html body
 function getURLFromHTML(htmlBody, baseURL){
-    const urls = []
-    const dom = new JSDOM(htmlBody);
-    const linkElements = dom.window.document.querySelectorAll('a');
+    const urls = [] //will hold an array of url strings
+    const dom = new JSDOM(htmlBody);    //creates new JSDOM object
+    const linkElements = dom.window.document.querySelectorAll('a'); //selects all anchor tags from html body
     
+    //loop through all linkElements
     for(const linkElement of linkElements) {
         if(linkElement.href.slice(0, 1) === '/'){
             //relative
@@ -92,9 +95,12 @@ function getURLFromHTML(htmlBody, baseURL){
 
 //this function normalizes the given URL
 function normalizeURL(urlStr) {
-    const urlObject = new URL(urlStr);
-    const hostPath = `${urlObject.hostname}${urlObject.pathname}`
+    const urlObject = new URL(urlStr);  //store url string into a URL object
+    
+    //this helps get rid of protocol and other unecessary parts of url
+    const hostPath = `${urlObject.hostname}${urlObject.pathname}`;  //stores hostpath by concatenating hostname and pathname
 
+    //this helps get rid of trailing slashes
     if(hostPath.length > 0 && hostPath.slice(-1) === '/'){
         return hostPath.slice(0, -1);
     }
