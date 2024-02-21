@@ -1,5 +1,8 @@
 const{JSDOM} = require('jsdom');
 
+//this function will recursively crawl from the base URL
+//until it either reaches external links or
+//until it runs out of links on the website
 async function crawlPage(baseURL, currentURL, pages){
     const baseURLObj = new URL(baseURL);
     const currentURLObj = new URL(currentURL);
@@ -17,7 +20,7 @@ async function crawlPage(baseURL, currentURL, pages){
 
     //initialize count
     pages[normalizedCurrentURL] = 1;
-    
+
     console.log(`actively crawling: ${currentURL}`);
 
     try{
@@ -54,6 +57,8 @@ async function crawlPage(baseURL, currentURL, pages){
     return pages;
 }
 
+//this function is a utility function that helps crawlPage
+//get URLs from the html body
 function getURLFromHTML(htmlBody, baseURL){
     const urls = []
     const dom = new JSDOM(htmlBody);
@@ -85,6 +90,7 @@ function getURLFromHTML(htmlBody, baseURL){
     return urls;
 }
 
+//this function normalizes the given URL
 function normalizeURL(urlStr) {
     const urlObject = new URL(urlStr);
     const hostPath = `${urlObject.hostname}${urlObject.pathname}`
